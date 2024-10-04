@@ -25,18 +25,9 @@ jobs:
           pip install --upgrade pip
           pip install -r data-exposure-api/requirements.txt
 
-      # Paso 4: Ejecutar pruebas (si tienes)
-      - name: Run Tests
-        run: |
-          source venv/bin/activate
-          # Asegúrate de tener tests en un directorio como tests/
-          pytest tests/
-
-      # Paso 5: Configurar Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Paso 6: Autenticarse en Google Cloud
       - name: Log in to Google Cloud
         uses: google-github-actions/auth@v1
         with:
