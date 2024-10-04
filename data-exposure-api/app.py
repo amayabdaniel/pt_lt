@@ -6,11 +6,9 @@ import os
 
 app = FastAPI()
 
-# Configurar variables de entorno
 DATASET = os.getenv("BIGQUERY_DATASET")
 TABLE = os.getenv("BIGQUERY_TABLE")
 
-# Inicializar el cliente de BigQuery
 client = bigquery.Client()
 
 @app.get("/data")
