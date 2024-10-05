@@ -74,30 +74,3 @@ resource "google_cloud_run_service_iam_binding" "api_allow_all" {
 
   members = ["allUsers"]
 }
-
-# Permisos IAM para el Suscriptor
-resource "google_cloud_run_service_iam_binding" "subscriber_allow_all" {
-  service  = google_cloud_run_service.subscriber_service.name
-  location = var.region
-  role     = "roles/run.invoker"
-
-  members = ["allUsers"]
-}
-
-resource "google_project_iam_member" "api_bigquery_viewer" {
-  project = var.project_id
-  role    = "roles/bigquery.dataViewer"
-  member  = "serviceAccount:${google_cloud_run_service.api_service.email}"
-}
-
-resource "google_project_iam_member" "subscriber_pubsub_subscriber" {
-  project = var.project_id
-  role    = "roles/pubsub.subscriber"
-  member  = "serviceAccount:${google_cloud_run_service.subscriber_service.email}"
-}
-
-resource "google_project_iam_member" "subscriber_bigquery_editor" {
-  project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${google_cloud_run_service.subscriber_service.email}"
-}
