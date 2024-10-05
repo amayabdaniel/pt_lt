@@ -1,4 +1,7 @@
-output "cloud_run_url" {
-  description = "La URL del servicio de Cloud Run desplegado."
-  value       = google_cloud_run_service.service.status[0].url
+output "api_cloud_run_url" {
+  value = google_cloud_run_service.api_service.status[0].url
+}
+
+output "subscriber_cloud_run_url" {
+  value = google_cloud_run_service.subscriber_service.status[0].url
 }

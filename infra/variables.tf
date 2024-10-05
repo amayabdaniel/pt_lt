@@ -1,79 +1,59 @@
 # infra/variables.tf
 
 variable "project_id" {
-  description = "El ID del proyecto de GCP."
   type        = string
+  description = "ID del proyecto de GCP"
 }
 
 variable "region" {
-  description = "La región de GCP donde se desplegarán los recursos."
   type        = string
-  default     = "us-central1"
+  description = "Región de despliegue"
 }
 
-# Variables Pub/Sub
+# Pub/Sub Variables
 variable "pubsub_topic_name" {
-  description = "Nombre del tópico de Pub/Sub."
   type        = string
-  default     = "data-ingestion-topic"
+  description = "Nombre del tópico de Pub/Sub"
 }
 
 variable "pubsub_subscription_name" {
-  description = "Nombre de la suscripción de Pub/Sub."
   type        = string
-  default     = "data-ingestion-subscription"
+  description = "Nombre de la suscripción de Pub/Sub"
 }
 
-# Variables BigQuery
+# BigQuery Variables
 variable "bigquery_dataset_id" {
-  description = "ID del dataset de BigQuery."
   type        = string
-  default     = "analytics_dataset"
+  description = "ID del dataset de BigQuery"
 }
 
 variable "bigquery_table_id" {
-  description = "ID de la tabla de BigQuery."
   type        = string
-  default     = "analytics_table"
+  description = "ID de la tabla de BigQuery"
 }
 
-variable "bigquery_schema" {
-  description = "Esquema de la tabla de BigQuery en formato JSON."
+# Cloud Run Variables
+variable "api_service_name" {
   type        = string
-  default     = <<EOF
-[
-  {
-    "name": "id",
-    "type": "STRING",
-    "mode": "REQUIRED"
-  },
-  {
-    "name": "timestamp",
-    "type": "TIMESTAMP",
-    "mode": "REQUIRED"
-  },
-  {
-    "name": "data",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  }
-]
-EOF
+  description = "Nombre del servicio de Cloud Run para la API"
 }
 
-# Variables Cloud Run
-variable "cloud_run_service_name" {
-  description = "Nombre del servicio de Cloud Run."
+variable "subscriber_service_name" {
   type        = string
+  description = "Nombre del servicio de Cloud Run para el suscriptor"
 }
 
-variable "docker_image" {
-  description = "Imagen de Docker para el servicio de Cloud Run."
+variable "api_docker_image" {
   type        = string
+  description = "URL de la imagen Docker de la API en Container Registry"
+}
+
+variable "subscriber_docker_image" {
+  type        = string
+  description = "URL de la imagen Docker del suscriptor en Container Registry"
 }
 
 variable "app_secret" {
-  description = "Clave secreta para la aplicación."
   type        = string
-  sensitive   = true
+  description = "Clave secreta para la aplicación"
 }

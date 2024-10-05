@@ -1,40 +1,44 @@
 variable "project_id" {
-  description = "El ID del proyecto de GCP."
   type        = string
+  description = "ID del proyecto de GCP"
 }
 
 variable "region" {
-  description = "La región de GCP."
   type        = string
+  description = "Región de despliegue"
 }
 
-variable "cloud_run_service_name" {
-  description = "Nombre del servicio de Cloud Run."
+variable "api_service_name" {
   type        = string
+  description = "Nombre del servicio de la API"
 }
 
-variable "docker_image" {
-  description = "Imagen de Docker para el servicio de Cloud Run."
+variable "subscriber_service_name" {
   type        = string
+  description = "Nombre del servicio del suscriptor"
+}
+
+variable "api_docker_image" {
+  type        = string
+  description = "URL de la imagen Docker de la API"
+}
+
+variable "subscriber_docker_image" {
+  type        = string
+  description = "URL de la imagen Docker del suscriptor"
+}
+
+variable "pubsub_subscription_name" {
+  type        = string
+  description = "Nombre de la suscripción de Pub/Sub"
 }
 
 variable "bigquery_dataset" {
-  description = "ID del dataset de BigQuery."
   type        = string
+  description = "Dataset de BigQuery"
 }
 
 variable "bigquery_table" {
-  description = "ID de la tabla de BigQuery."
   type        = string
-}
-
-variable "pubsub_topic" {
-  description = "Nombre del tópico de Pub/Sub."
-  type        = string
-}
-
-variable "app_secret" {
-  description = "Clave secreta para la aplicación."
-  type        = string
-  sensitive   = true
+  description = "Tabla de BigQuery"
 }

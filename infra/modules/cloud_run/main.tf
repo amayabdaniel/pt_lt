@@ -1,51 +1,30 @@
-# infra/modules/cloud_run/main.tf
-
-resource "google_cloud_run_service" "service" {
-  name     = var.cloud_run_service_name
+resource "google_cloud_run_service" "api_service" {
+  name     = var.api_service_name
   location = var.region
   project  = var.project_id
-
-  metadata {
-    labels = {
-      environment = "production"
-    }
-  }
 
   template {
     spec {
       containers {
-        image = var.docker_image
-
+        image = var.api_docker_image
         ports {
           container_port = 8080
         }
-
+        env {
+          name  = "PROJECT_ID"
+          value = var.project_id
+        }
         env {
           name  = "BIGQUERY_DATASET"
           value = var.bigquery_dataset
         }
-
         env {
           name  = "BIGQUERY_TABLE"
           value = var.bigquery_table
         }
-
-        env {
-          name  = "PUBSUB_TOPIC"
-          value = var.pubsub_topic
-        }
-
-        env {
-          name  = "APP_SECRET"
-          value = var.app_secret
-        }
-
-        #límites de recursos, sondas de liveness/readiness, etc.
       }
     }
   }
-
-  autogenerate_revision_name = true
 
   traffic {
     percent         = 100
@@ -53,10 +32,53 @@ resource "google_cloud_run_service" "service" {
   }
 }
 
-resource "google_cloud_run_service_iam_binding" "allow_all" {
-  service  = google_cloud_run_service.service.name
-  location = google_cloud_run_service.service.location
-  project  = google_cloud_run_service.service.project
+resource "google_cloud_run_service" "subscriber_service" {
+  name     = var.subscriber_service_name
+  location = var.region
+  project  = var.project_id
+
+  template {
+    spec {
+      containers {
+        image = var.subscriber_docker_image
+        env {
+          name  = "PROJECT_ID"
+          value = var.project_id
+        }
+        env {
+          name  = "SUBSCRIPTION_NAME"
+          value = var.pubsub_subscription_name
+        }
+        env {
+          name  = "BIGQUERY_DATASET"
+          value = var.bigquery_dataset
+        }
+        env {
+          name  = "BIGQUERY_TABLE"
+          value = var.bigquery_table
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+resource "google_cloud_run_service_iam_binding" "api_allow_all" {
+  service  = google_cloud_run_service.api_service.name
+  location = var.region
+  role     = "roles/run.invoker"
+
+  members = ["allUsers"]
+}
+
+# Permisos IAM para el Suscriptor
+resource "google_cloud_run_service_iam_binding" "subscriber_allow_all" {
+  service  = google_cloud_run_service.subscriber_service.name
+  location = var.region
   role     = "roles/run.invoker"
 
   members = ["allUsers"]

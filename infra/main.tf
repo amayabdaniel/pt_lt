@@ -5,37 +5,31 @@ provider "google" {
   region  = var.region
 }
 
-# Módulo: Pub/Sub
 module "pubsub" {
-  source = "./modules/pubsub"
-
+  source                   = "./modules/pubsub"
   project_id               = var.project_id
   region                   = var.region
   pubsub_topic_name        = var.pubsub_topic_name
   pubsub_subscription_name = var.pubsub_subscription_name
 }
 
-# Módulo: BigQuery
 module "bigquery" {
-  source = "./modules/bigquery"
-
+  source              = "./modules/bigquery"
   project_id          = var.project_id
   region              = var.region
   bigquery_dataset_id = var.bigquery_dataset_id
   bigquery_table_id   = var.bigquery_table_id
-  bigquery_schema     = var.bigquery_schema
 }
 
-# Módulo: Cloud Run
 module "cloud_run" {
-  source = "./modules/cloud_run"
-
-  project_id             = var.project_id
-  region                 = var.region
-  cloud_run_service_name = var.cloud_run_service_name
-  docker_image           = var.docker_image
-  bigquery_dataset       = module.bigquery.bigquery_dataset_id
-  bigquery_table         = module.bigquery.bigquery_table_id
-  pubsub_topic           = module.pubsub.pubsub_topic_name
-  app_secret             = var.app_secret
+  source                   = "./modules/cloud_run"
+  project_id               = var.project_id
+  region                   = var.region
+  api_service_name         = var.api_service_name
+  subscriber_service_name  = var.subscriber_service_name
+  api_docker_image         = var.api_docker_image
+  subscriber_docker_image  = var.subscriber_docker_image
+  pubsub_subscription_name = var.pubsub_subscription_name
+  bigquery_dataset         = var.bigquery_dataset_id
+  bigquery_table           = var.bigquery_table_id
 }

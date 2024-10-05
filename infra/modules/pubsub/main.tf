@@ -6,5 +6,6 @@ resource "google_pubsub_topic" "topic" {
 resource "google_pubsub_subscription" "subscription" {
   name  = var.pubsub_subscription_name
   topic = google_pubsub_topic.topic.name
-  project = var.project_id
+
+  ack_deadline_seconds = 20
 }
