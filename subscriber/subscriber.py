@@ -31,6 +31,15 @@ def read_root():
 def callback(message):
     try:
         data = json.loads(message.data.decode('utf-8'))
+        
+        required_fields = ['id', 'timestamp']
+        missing_fields = [field for field in required_fields if field not in data]
+        
+        if missing_fields:
+            logging.error(f"Missing required fields: {missing_fields} in message: {data}")
+            message.nack()
+            return
+        
         errors = bigquery_client.insert_rows_json(table_id, [data])
         if not errors:
             logging.info(f"Fila insertada: {data}")
@@ -38,6 +47,9 @@ def callback(message):
         else:
             logging.error(f"Errores al insertar fila: {errors}")
             message.nack()
+    except json.JSONDecodeError as json_err:
+        logging.error(f"Error decoding JSON: {json_err}. Message data: {message.data}")
+        message.nack()
     except Exception as e:
         logging.error(f"Error al procesar el mensaje: {e}")
         message.nack()
