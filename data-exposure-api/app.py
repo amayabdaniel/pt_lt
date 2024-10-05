@@ -5,12 +5,10 @@ import uvicorn
 
 app = FastAPI()
 
-# Configurar variables de entorno
 PROJECT_ID = os.getenv("PROJECT_ID")
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET")
 BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE")
 
-# Inicializar el cliente de BigQuery
 client = bigquery.Client(project=PROJECT_ID)
 
 @app.get("/")
