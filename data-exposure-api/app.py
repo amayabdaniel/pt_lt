@@ -12,7 +12,7 @@ client = bigquery.Client(project=PROJECT_ID)
 
 @app.get("/")
 def read_root():
-    return {"message": "Bienvenido a la API de Exposición de Datos"}
+    return {"message": "Welcome to the Data Exposure API"}
 
 @app.get("/data")
 def get_data():
@@ -25,5 +25,10 @@ def get_data():
     results = query_job.result()
     data = [dict(row) for row in results]
     if not data:
-        raise HTTPException(status_code=404, detail="No se encontraron datos.")
+        raise HTTPException(status_code=404, detail="No data found.")
     return {"data": data}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)
