@@ -4,24 +4,26 @@ import os
 
 app = FastAPI()
 
-# Configurar variables de entorno
 PROJECT_ID = os.getenv("PROJECT_ID")
-DATASET = os.getenv("BIGQUERY_DATASET")
-TABLE = os.getenv("BIGQUERY_TABLE")
+BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET")
+BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE")
 
 client = bigquery.Client(project=PROJECT_ID)
+
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenido a la API de Exposición de Datos"}
 
 @app.get("/data")
 def get_data():
     query = f"""
         SELECT *
-        FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
+        FROM `{PROJECT_ID}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}`
         LIMIT 100
     """
-    try:
-        query_job = client.query(query)
-        results = query_job.result()
-        data = [dict(row) for row in results]
-        return {"data": data}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    query_job = client.query(query)
+    results = query_job.result()
+    data = [dict(row) for row in results]
+    if not data:
+        raise HTTPException(status_code=404, detail="No se encontraron datos.")
+    return {"data": data}
