@@ -254,3 +254,9 @@ Ejecutar pruebas de integración:
 ## Conclusión
 
 Este proyecto implementa una plataforma completa para la ingesta y exposición de datos en Google Cloud Platform, utilizando prácticas recomendadas de DevOps y SRE. A través de la automatización con Terraform y GitHub Actions, se logra un despliegue consistente y reproducible. El monitoreo y las alertas aseguran que el sistema mantenga altos niveles de disponibilidad y rendimiento.
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
