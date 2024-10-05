@@ -1,3 +1,4 @@
+# Etapa de construcción
 FROM python:3.9-slim AS builder
 
 WORKDIR /app
@@ -6,16 +7,13 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py .
+COPY subscriber.py .
 
 FROM python:3.9-slim
 
 WORKDIR /app
 
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY subscriber.py .
 
-COPY app.py .
-
-EXPOSE 8080
-
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "subscriber.py"]

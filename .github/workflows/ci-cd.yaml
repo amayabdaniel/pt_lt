@@ -18,7 +18,14 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install Dependencies
+      - name: Install Dependencies for API
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r data-exposure-api/requirements.txt
+
+      - name: Install Dependencies for Subscriber
         run: |
           python -m venv venv
           source venv/bin/activate
@@ -37,15 +44,28 @@ jobs:
         run: |
           gcloud auth configure-docker
 
-      - name: Build and Push Docker image
+      - name: Build and Push API Docker image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-api:${{ github.sha }} ./data-exposure-api
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-api:${{ github.sha }}
 
-      - name: Deploy to Cloud Run
+      - name: Build and Push Subscriber Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-subscriber:${{ github.sha }} ./subscriber
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-subscriber:${{ github.sha }}
+
+      - name: Deploy API to Cloud Run
         run: |
           gcloud run deploy data-exposure-api \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-api:${{ github.sha }} \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated
+
+      - name: Deploy Subscriber to Cloud Run
+        run: |
+          gcloud run deploy data-exposure-subscriber \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/data-exposure-subscriber:${{ github.sha }} \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
